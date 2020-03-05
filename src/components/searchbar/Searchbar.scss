@@ -1,0 +1,57 @@
+
+
+
+
+.Searchbar{
+
+  p {
+    font-size: 30px;
+  }
+
+  img {
+    width: 150px;
+    border: 1px solid #000;
+    box-shadow: 10px 10px 31px -7px rgba(0,0,0,0.75);
+  }
+
+  .btn {
+    padding: 0;
+    margin: 10px;
+    
+  }
+}
+
+.modal {
+
+  iframe {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: solid 1px #000;
+  }
+  .modal-header {
+    h5 {
+      font-size: 30px;
+
+    }
+  }
+
+  .modal-body {
+    img {
+      width: 100%;
+      border: 1px solid #000;
+    }
+  }
+
+  .modal-footer {
+
+    a{
+      color: #FFF;
+    }
+    
+    & :hover {
+      text-decoration: none; 
+      color: #FFF;
+    }
+  }
+}
+
