@@ -10,11 +10,14 @@ class Searchbar extends Component {
   state = {
     data: data,
     modalOpen: false,
-    thisModalInfo: ''
+    thisModalInfo: '',
+    actualSearchWord: '',
+    dataShown: data
   }
 
   renderAlbumTitles(){
-    return this.state.data.map((album, index)=>{
+
+    return this.state.dataShown.map((album, index)=>{
       return (
         <Button key={index} color="link" onClick={()=>this.toggle(album)}><img src={album.albumLink} alt={album.imageAlt} /></Button>
       )
@@ -24,7 +27,7 @@ class Searchbar extends Component {
   toggle(albumInfo = ''){
     this.setState({
       modalOpen: !this.state.modalOpen,
-      thisModalInfo: albumInfo
+      thisModalInfo: albumInfo,
     })
   }
 
@@ -51,6 +54,21 @@ class Searchbar extends Component {
     )
   }
 
+  changeActualSearchWord(eventTargetValue){
+
+    let searchedAlbums = this.state.data.filter((album)=>{
+      return album.artist.toLowerCase().includes(eventTargetValue)
+    })
+
+    console.log(eventTargetValue)
+
+    this.setState({
+      actualSearchWord: eventTargetValue,
+      dataShown: searchedAlbums
+    })
+  }
+
+
 
   render(){
     return (
@@ -58,7 +76,7 @@ class Searchbar extends Component {
         {this.showModal(this.state.modalOpen)}
         <InputGroup>
           <InputGroupAddon addonType="prepend"></InputGroupAddon>
-          <Input placeholder="Search for music..." />
+          <Input placeholder="Search for music..." onChange={(event)=>this.changeActualSearchWord(event.target.value.toLowerCase())}/>
         </InputGroup>
         {this.renderAlbumTitles()}
       </div>
