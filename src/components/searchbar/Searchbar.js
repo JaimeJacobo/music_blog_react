@@ -58,7 +58,6 @@ class Searchbar extends Component {
   changeActualSearchWord(eventTargetValue){
 
     let searchedElement = this.state.selectValue
-    console.log(searchedElement)
 
     let searchedAlbums = this.state.data.filter((album)=>{
       return album[searchedElement].toLowerCase().includes(eventTargetValue)
@@ -72,7 +71,15 @@ class Searchbar extends Component {
 
   changeTypeOfSearch(eventTargetValue){
 
-    document.getElementById('searchbarInput').value = ''
+    document.getElementById('searchbarInput').value = '';
+    if(eventTargetValue === 'artist'){
+      document.getElementById('searchbarInput').placeholder = 'Dream Theater, Mago de Oz, fernandocosta...';
+    } else if(eventTargetValue === 'album'){
+      document.getElementById('searchbarInput').placeholder = 'Moonglow, The Ashtonishing, Ira Dei...';
+    } else if(eventTargetValue === 'genre'){
+      document.getElementById('searchbarInput').placeholder = 'Metal, Rock, Rap, Pop...';    
+    }
+
 
     this.setState({
         selectValue: eventTargetValue,
@@ -87,11 +94,6 @@ class Searchbar extends Component {
     return (
       <div className="Searchbar">
         {this.showModal(this.state.modalOpen)}
-        <select name="typeOfSearch" id="typeOfSearch" onChange={(event)=>this.changeTypeOfSearch(event.target.value)}>
-          <option value="artist">Artist</option>
-          <option value="album">Album</option>
-          <option value="genre">Genre</option>
-        </select>
         <InputGroup>
           <InputGroupAddon addonType="prepend">
             <InputGroupText> <span className="inputSpan">Search by: </span>
@@ -102,7 +104,7 @@ class Searchbar extends Component {
               </select>
             </InputGroupText>
           </InputGroupAddon>
-          <Input id="searchbarInput" placeholder="Look up some music here" onChange={(event)=>this.changeActualSearchWord(event.target.value.toLowerCase())}/>
+          <Input id="searchbarInput" placeholder="Dream Theater, Mago de Oz, fernandocosta..." onChange={(event)=>this.changeActualSearchWord(event.target.value.toLowerCase())}/>
         </InputGroup>
         {this.renderAlbumTitles()}
       </div>
