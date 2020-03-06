@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import './Searchbar.scss';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Input, InputGroup, InputGroupAddon } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Input, InputGroup, InputGroupAddon, InputGroupText } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const data = require('../../data.json');
@@ -12,7 +12,8 @@ class Searchbar extends Component {
     modalOpen: false,
     thisModalInfo: '',
     actualSearchWord: '',
-    dataShown: data
+    dataShown: data,
+    selectValue: 'artist'
   }
 
   renderAlbumTitles(){
@@ -56,16 +57,28 @@ class Searchbar extends Component {
 
   changeActualSearchWord(eventTargetValue){
 
-    let searchedAlbums = this.state.data.filter((album)=>{
-      return album.artist.toLowerCase().includes(eventTargetValue)
-    })
+    let searchedElement = this.state.selectValue
+    console.log(searchedElement)
 
-    console.log(eventTargetValue)
+    let searchedAlbums = this.state.data.filter((album)=>{
+      return album[searchedElement].toLowerCase().includes(eventTargetValue)
+    })
 
     this.setState({
       actualSearchWord: eventTargetValue,
       dataShown: searchedAlbums
     })
+  }
+
+  changeTypeOfSearch(eventTargetValue){
+
+    document.getElementById('searchbarInput').value = ''
+
+    this.setState({
+        selectValue: eventTargetValue,
+        dataShown: data
+      }
+    )
   }
 
 
@@ -74,9 +87,22 @@ class Searchbar extends Component {
     return (
       <div className="Searchbar">
         {this.showModal(this.state.modalOpen)}
+        <select name="typeOfSearch" id="typeOfSearch" onChange={(event)=>this.changeTypeOfSearch(event.target.value)}>
+          <option value="artist">Artist</option>
+          <option value="album">Album</option>
+          <option value="genre">Genre</option>
+        </select>
         <InputGroup>
-          <InputGroupAddon addonType="prepend"></InputGroupAddon>
-          <Input placeholder="Search for music..." onChange={(event)=>this.changeActualSearchWord(event.target.value.toLowerCase())}/>
+          <InputGroupAddon addonType="prepend">
+            <InputGroupText> <span className="inputSpan">Search by: </span>
+              <select name="typeOfSearch" id="typeOfSearch" onChange={(event)=>this.changeTypeOfSearch(event.target.value)}>
+                <option value="artist">Artist</option>
+                <option value="album">Album</option>
+                <option value="genre">Genre</option>
+              </select>
+            </InputGroupText>
+          </InputGroupAddon>
+          <Input id="searchbarInput" placeholder="Look up some music here" onChange={(event)=>this.changeActualSearchWord(event.target.value.toLowerCase())}/>
         </InputGroup>
         {this.renderAlbumTitles()}
       </div>
