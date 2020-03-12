@@ -1,43 +1,45 @@
-import React, {Component} from 'react';
+import React, {useState} from 'react';
 import './Searchbar.scss';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Input, InputGroup, InputGroupAddon, InputGroupText } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const data = require('../../data.json');
 
-class Searchbar extends Component {
+function Searchbar(){
 
-  state = {
+  const [myState, updateState] = useState({
     data: data,
     modalOpen: false,
     thisModalInfo: '',
     actualSearchWord: '',
     dataShown: data,
     selectValue: 'artist'
-  }
+  })
 
-  renderAlbumTitles(){
+  const renderAlbumTitles = ()=>{
 
-    return this.state.dataShown.map((album, index)=>{
+    return myState.dataShown.map((album, index)=>{
       return (
-        <Button key={index} color="link" onClick={()=>this.toggle(album)}><img src={album.albumLink} alt={album.imageAlt} /></Button>
+        <Button key={index} color="link" onClick={()=>toggle(album)}><img src={album.albumLink} alt={album.imageAlt} /></Button>
       )
     })
   }
 
-  toggle(albumInfo = ''){
-    this.setState({
-      modalOpen: !this.state.modalOpen,
+  const toggle = (albumInfo = '')=>{
+
+    updateState((prevState)=>({
+      ...prevState,
+      modalOpen: !myState.modalOpen,
       thisModalInfo: albumInfo,
-    })
+    }))
   }
 
-  showModal(status){
-    const thisAlbum = this.state.thisModalInfo
+  const showModal = (status)=>{
+    const thisAlbum = myState.thisModalInfo
     return(
         <div>
           <Modal isOpen={status} >
-            <ModalHeader toggle={()=>this.toggle()}>{thisAlbum.imageAlt}</ModalHeader>
+            <ModalHeader toggle={()=>toggle()}>{thisAlbum.imageAlt}</ModalHeader>
             <ModalBody>
               <img src={thisAlbum.albumLink} alt={thisAlbum.imageAlt}/>
               <iframe title={thisAlbum.imageAlt} src={thisAlbum.spotifyPlaylist} width="100%" height="80" frameBorder="0" allowtransparency="true" allow="encrypted-media"></iframe>
@@ -48,28 +50,34 @@ class Searchbar extends Component {
             </ModalBody>
             <ModalFooter>
               <a href={thisAlbum.spotifyLink}><Button color="success" >Abrir en Spotify</Button></a>
-              <Button color="secondary" onClick={()=>this.toggle()}>Cerrar</Button>
+              <Button color="secondary" onClick={()=>toggle()}>Cerrar</Button>
             </ModalFooter>
           </Modal>
         </div>          
     )
   }
 
-  changeActualSearchWord(eventTargetValue){
+  const changeActualSearchWord = (eventTargetValue)=>{
 
-    let searchedElement = this.state.selectValue
+    let searchedElement = myState.selectValue
 
-    let searchedAlbums = this.state.data.filter((album)=>{
+    let searchedAlbums = myState.data.filter((album)=>{
       return album[searchedElement].toLowerCase().includes(eventTargetValue)
     })
 
-    this.setState({
+    // this.setState({
+    //   actualSearchWord: eventTargetValue,
+    //   dataShown: searchedAlbums
+    // })
+
+    updateState((prevState)=>({
+      ...prevState,
       actualSearchWord: eventTargetValue,
       dataShown: searchedAlbums
-    })
+    }))
   }
 
-  changeTypeOfSearch(eventTargetValue){
+  const changeTypeOfSearch = (eventTargetValue)=> {
 
     document.getElementById('searchbarInput').value = '';
     if(eventTargetValue === 'artist'){
@@ -80,36 +88,31 @@ class Searchbar extends Component {
       document.getElementById('searchbarInput').placeholder = 'Metal, Rock, Rap, Pop...';    
     }
 
-
-    this.setState({
-        selectValue: eventTargetValue,
-        dataShown: data
-      }
-    )
+    updateState((prevState)=>({
+      ...prevState,
+      selectValue: eventTargetValue,
+      dataShown: data
+    }))
   }
 
-
-
-  render(){
     return (
       <div className="Searchbar">
-        {this.showModal(this.state.modalOpen)}
+        {showModal(myState.modalOpen)}
         <InputGroup>
           <InputGroupAddon addonType="prepend">
             <InputGroupText> <span className="inputSpan">Search by: </span>
-              <select name="typeOfSearch" id="typeOfSearch" onChange={(event)=>this.changeTypeOfSearch(event.target.value)}>
+              <select name="typeOfSearch" id="typeOfSearch" onChange={(event)=>changeTypeOfSearch(event.target.value)}>
                 <option value="artist">Artist</option>
                 <option value="album">Album</option>
                 <option value="genre">Genre</option>
               </select>
             </InputGroupText>
           </InputGroupAddon>
-          <Input id="searchbarInput" placeholder="Dream Theater, Mago de Oz, fernandocosta..." onChange={(event)=>this.changeActualSearchWord(event.target.value.toLowerCase())}/>
+          <Input id="searchbarInput" placeholder="Dream Theater, Mago de Oz, fernandocosta..." onChange={(event)=>changeActualSearchWord(event.target.value.toLowerCase())}/>
         </InputGroup>
-        {this.renderAlbumTitles()}
+        {renderAlbumTitles()}
       </div>
     );
-  }
 }
 
 export default Searchbar;
